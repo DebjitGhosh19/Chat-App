@@ -1,8 +1,17 @@
+import {useState} from 'react'
 import {Link} from 'react-router-dom'
 
 const Login = () => {
+  const [formData, setFormData] = useState({email: '', password: ''})
+
+  const handleChange = (event) => {
+    const {name, value} = event.target
+    setFormData((currentData) => ({...currentData, [name]: value}))
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault()
+    console.log('Login submitted:', formData)
   }
 
   return (
@@ -24,6 +33,8 @@ const Login = () => {
             type="email"
             placeholder="you@example.com"
             required
+            value={formData.email}
+            onChange={handleChange}
             className="w-full rounded-lg border border-slate-300 px-3.5 py-3 text-[15px] text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
           />
 
@@ -31,9 +42,7 @@ const Login = () => {
             <label htmlFor="password" className="text-sm font-semibold text-slate-700">
               Password
             </label>
-            <Link to='/forgot-password' type="button" className="bg-transparent border-none p-0 text-sm font-medium text-indigo-600 cursor-pointer">
-              Forgot password?
-            </Link>
+            
           </div>
           <input
             id="password"
@@ -41,6 +50,8 @@ const Login = () => {
             type="password"
             placeholder="Enter your password"
             required
+            value={formData.password}
+            onChange={handleChange}
             className="w-full rounded-lg border border-slate-300 px-3.5 py-3 text-[15px] text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
           />
 

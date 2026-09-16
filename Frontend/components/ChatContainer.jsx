@@ -16,10 +16,10 @@ useEffect(() => {
 }, [])
 
   return selectedUser ? (
-    <div className="h-full overflow-scroll relative backdrop-blur-lg">
+    <div className="h-full overflow-auto scrollbar-none relative backdrop-blur-lg">
       {console.log(selectedUser, sender)}
       {/* Header */}
-      <div className="flex  p-2 mt-3 border border-stone-500  justify-between ">
+      <div className="flex  p-2 mt-3   justify-between ">
         <div className="flex items-center gap-2  ">
           <img
             src={selectedUser.profilePic}
@@ -41,7 +41,7 @@ useEffect(() => {
       </div>
       <hr />
       {/* Chat Area */}
-      <div className="flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3 pb-6">
+      <div className="flex flex-col h-[calc(100%-120px)] overflow-auto scrollbar-none p-3 pb-6">
         {messagesDummyData.map((mess, index) => (
           <div
             key={index}
@@ -79,13 +79,14 @@ useEffect(() => {
       </div>
       {/* Bottom area */}
       <div className="absolute bottom-0 left-0 right-0 flex items-center gap-3 p-3">
-        <div>
-          <input type="text" name="" id=""  placeholder="send a message" />
+        <div className="flex flex-1 items-center bg-gray-100/12 px-3 rounded-full ">
+          <input className="flex-1 text-sm p-3 border-none rounded-lg outline-0 text-white placeholder-gray-400" type="text" name="" id=""  placeholder="send a message" />
           <input type="file" name="" id="image" accept="image/png, image/jpeg" hidden />
           <label htmlFor="image">
             <img src={assets.gallery_icon} alt="" className="w-5 mr-2 cursor-pointer" />
           </label>
         </div>
+        <img src={assets.send_button} alt=""  className="w-7 cursor-pointer"/>
       </div>
     </div>
   ) : (
