@@ -5,7 +5,7 @@ const userSchema=new mongoosh.Schema({
         required:true,
         unique:true
     },
-    fullName:{
+    name:{
         type:String,
         required:true
     },

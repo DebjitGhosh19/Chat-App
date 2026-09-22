@@ -5,6 +5,7 @@ import http from "http";
 import cors from 'cors'
 import { Server } from "socket.io";
 import userRouter from './routes/user.router.js';
+import cloudinaryConfig from './config/cloudinary.js';
 const port = process.env.PORT||3000;
 //Create Express app and HTTP server
 const app = express();
@@ -12,6 +13,8 @@ const server = http.createServer(app);
 
 // middleware
 connectDB()
+//cloudinaryConfig
+await cloudinaryConfig()
 app.use(express.json({limit:"4mb"}))
 app.use(cors())
 app.use("/api/status",(req,res)=>{
