@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
+import User from '../model/user.model.js';
 const UserAuth= async (req,res,next) => {
-    const {token} = req.headers;
+    const {token} = req.headers.token;
   try{
       if(!token){
         return res.status(401).json({
@@ -9,7 +10,9 @@ const UserAuth= async (req,res,next) => {
           });
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  req.userId = decoded.id;
+    const user=await User.findById(decoded.id).select("-password")
+    if(!user) return res.json({success:false,message:"user not found"})
+  req.user=user;
     
     next();
   }

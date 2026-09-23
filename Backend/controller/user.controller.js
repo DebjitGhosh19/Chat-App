@@ -16,7 +16,7 @@ export const Signup = async (req,res) => {
     }
 
     if (!image) {
-      return res.status(400).json({ success: false, message: 'কোনো ফাইল পাওয়া যায়নি!' });
+      return res.status(400).json({ success: false, message: 'No file' });
     }
 
     const existingUser = await User.findOne({email });
@@ -30,7 +30,7 @@ export const Signup = async (req,res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // // Upload the profile image to Cloudinary.
+     // Upload the profile image to Cloudinary.
     const result = await cloudinary.uploader.upload(image.path, {
       resource_type: "image",
     });
@@ -39,7 +39,7 @@ export const Signup = async (req,res) => {
     
     const imageUrl =  result.secure_url;
     const newUser = await User.create({
-      name: name,
+      name,
       email,
       password: hashedPassword,
       bio,
@@ -127,7 +127,7 @@ export const Login=async (req,res) => {
 // Controller to update profile details
 export const UpdateProfile = async (req, res) => {
   try {
-    const userId = req.userId;
+    const userId = req.user._id;
    
     
     const { name, email, bio } = req.body;
@@ -205,3 +205,9 @@ export const UpdateProfile = async (req, res) => {
     });
   }
 };
+
+
+//controller to check if user is authenticatd
+export const checkAuth=(req,res)=>{
+  res.json({success:true,user:req.user})
+}
