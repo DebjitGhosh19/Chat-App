@@ -5,10 +5,11 @@ import upload from '../middleware/multer.js';
 
 
 
+
 const userRouter = express.Router();
 
 userRouter.post("/signup",upload.single('image'),Signup)
-userRouter.post("/login", UserAuth,Login)
+userRouter.post("/login",Login)
 userRouter.put("/update-profile",UserAuth,upload.single('image'),UpdateProfile)
 userRouter.get("/check",UserAuth,checkAuth)
 export default userRouter;

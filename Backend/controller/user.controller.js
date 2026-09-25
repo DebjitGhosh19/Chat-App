@@ -15,9 +15,7 @@ export const Signup = async (req,res) => {
       });
     }
 
-    if (!image) {
-      return res.status(400).json({ success: false, message: 'No file' });
-    }
+   
 
     const existingUser = await User.findOne({email });
 
@@ -30,14 +28,13 @@ export const Signup = async (req,res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-     // Upload the profile image to Cloudinary.
-    const result = await cloudinary.uploader.upload(image.path, {
-      resource_type: "image",
-    });
-  
-
-    
-    const imageUrl =  result.secure_url;
+    let imageUrl = "";
+    if (image) {
+      const result = await cloudinary.uploader.upload(image.path, {
+        resource_type: "image",
+      });
+      imageUrl = result.secure_url;
+    }
     const newUser = await User.create({
       name,
       email,

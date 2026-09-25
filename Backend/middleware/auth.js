@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import User from '../model/user.model.js';
 const UserAuth= async (req,res,next) => {
-    const {token} = req.headers.token;
   try{
+  const token = req.headers.token;
       if(!token){
         return res.status(401).json({
             success: false, 

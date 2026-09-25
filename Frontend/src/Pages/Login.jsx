@@ -1,5 +1,7 @@
 import {useState} from 'react'
 import {Link} from 'react-router-dom'
+import { useAuth } from '../../context/AuthContex'
+
 
 const Login = () => {
   const [formData, setFormData] = useState({email: '', password: ''})
@@ -9,9 +11,13 @@ const Login = () => {
     setFormData((currentData) => ({...currentData, [name]: value}))
   }
 
+  const { login } = useAuth();
+
   const handleSubmit = (event) => {
     event.preventDefault()
     console.log('Login submitted:', formData)
+    login("login",formData)
+
   }
 
   return (

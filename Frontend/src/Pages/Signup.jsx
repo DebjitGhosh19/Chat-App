@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {Link} from 'react-router-dom'
+import { useAuth } from "../../context/AuthContex";
 export default function Signup() {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
@@ -9,7 +10,7 @@ export default function Signup() {
     image: null,
     bio: "",
   });
-
+ const { login } = useAuth();
   const handleChange = ({ target }) =>
     setForm((current) => ({ ...current, [target.name]: target.value }));
 
@@ -20,6 +21,7 @@ export default function Signup() {
       return;
     }
     // Connect this form to the signup API here.
+        login("signup",form)
   };
 
   return (
