@@ -32,7 +32,7 @@ useEffect(() => {
           </p>
         </div>
         <img
-          onClick={() => setselectedUser(null)}
+          onClick={() => setselectedUser(false)}
           src={assets.arrow_icon}
           className="md:hidden max-w-7"
           alt=""
