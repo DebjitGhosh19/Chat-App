@@ -123,8 +123,11 @@ export const UpdateProfile = async (req, res) => {
     const userId = req.user._id;
    
     
-    const { name, email, bio } = req.body;
+    const { name, bio } = req.body;
+    console.log(name,bio);
+    
     const image = req.file;
+console.log(image);
 
     if (!userId) {
       return res.status(401).json({
@@ -133,30 +136,17 @@ export const UpdateProfile = async (req, res) => {
       });
     }
 
-    if (!name && !email && bio === undefined && !image) {
+    if (!name  && bio === undefined && !image) {
       return res.status(400).json({
         success: false,
         message: "At least one profile field is required.",
       });
     }
 
-    if (email) {
-      const existingUser = await User.findOne({
-        email,
-        _id: { $ne: userId },
-      });
-
-      if (existingUser) {
-        return res.status(409).json({
-          success: false,
-          message: "Email is already in use.",
-        });
-      }
-    }
 
     const updates = {};
     if (name ) updates.name = name;
-    if (email) updates.email = email;
+    // if (email) updates.email = email;
     if (bio !== undefined) updates.bio = bio;
 
     if (image) {
@@ -181,13 +171,7 @@ export const UpdateProfile = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Profile updated successfully.",
-      user: {
-        id: user._id,
-        userName: user.name,
-        email: user.email,
-        bio: user.bio,
-        profilePic: user.profilePic,
-      },
+      user,
     });
   } catch (error) {
     console.error("Update profile error:", error);

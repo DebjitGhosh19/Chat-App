@@ -21,11 +21,12 @@ export const io = new Server(server, {
 //store online users
 export const userSocketMap={}
 
-// 3. Listen for incoming socket connections
+// socket.io connection handelar
 io.on('connection', (socket) => {
   const userId=socket.handshake.query.userId;
   console.log(`User connected: ` , userId);
   if (userId) userSocketMap[userId]=socket.id
+  //Emit online users to all connected clients
    io.emit("getOnlineUsers",
             Object.keys(userSocketMap)
         );

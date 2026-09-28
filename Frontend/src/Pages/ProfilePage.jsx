@@ -1,19 +1,28 @@
 import { useState } from 'react'
+import { useAuth } from '../../context/AuthContex'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+
 
 const ProfilePage = () => {
   const [name, setName] = useState('')
   const [bio, setBio] = useState('')
   const [image, setImage] = useState('')
-
+  const navigate=useNavigate()
+const {  authUser, updateProfile  } = useAuth();
   const handleImageChange = (event) => {
     const file = event.target.files?.[0]
     if (file) setImage(URL.createObjectURL(file))
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async(event) => {
     event.preventDefault()
-    // Connect this handler to the profile API when it is available.
-  }
+
+    await updateProfile({name,bio,image})
+    navigate('/')
+    }
+  
+  
 
   return (
     <div className='flex min-h-screen w-full items-center justify-center bg-slate-950 px-4 py-8 text-white'>
@@ -36,7 +45,7 @@ const ProfilePage = () => {
         <div className='space-y-5'>
           <div>
             <label htmlFor='name' className='mb-2 block text-sm font-medium text-slate-200'>Name</label>
-            <input id='name' type='text' value={name} onChange={(event) => setName(event.target.value)} placeholder='Your name' required className='w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none transition placeholder:text-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500' />
+            <input id='name' type='text' value={name} onChange={(event) => setName(event.target.value)} placeholder='Your name'  className='w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none transition placeholder:text-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500' />
           </div>
 
           <div>

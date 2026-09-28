@@ -17,7 +17,7 @@ useEffect(() => {
 
   return selectedUser ? (
     <div className="h-full overflow-auto scrollbar-none relative backdrop-blur-lg">
-      {console.log(selectedUser, sender)}
+      
       {/* Header */}
       <div className="flex  p-2 mt-3   justify-between ">
         <div className="flex items-center gap-2  ">

@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 import {io} from "socket.io-client"
 const AuthContext = createContext(null);
 const Backend_URL =  "http://localhost:4000";
@@ -12,7 +13,7 @@ export function AuthProvider({ children }) {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [socket, setSocket] = useState(null);
   const [loading, setLoading] = useState(true);
-
+const navigate = useNavigate();
  //check if user is authenticated and if so,set the user data and connect the socket 
  const checkAuth=async () => {
     const storedToken = localStorage.getItem("token");
@@ -47,13 +48,16 @@ export function AuthProvider({ children }) {
 const login=async (state,credentials) => {
   try {
     const {data}=await axios.post(`/api/auth/${state}`,credentials)
+   
+   console.log(data);
     if (data.success) {
-      setAuthUser(data.user)
-      connectSocket(data.user)
+      setAuthUser(data.userData)
+      connectSocket(data.userData)
       axios.defaults.headers.common["token"]=data.token
       setToken(data.token);
       localStorage.setItem("token",data.token)
       toast.success(data.message)
+   navigate("/")
     }
     else{
       toast.error(data.message)
@@ -76,6 +80,8 @@ const logout=async () => {
 const updateProfile=async (body) => {
   try {
     const {data}=await axios.put("/api/auth/update-profile",body);
+    console.log(data);
+    
     if (data.success) {
       setAuthUser(data.user)
       toast.success("Profile updated sucessfully")
@@ -106,7 +112,7 @@ const connectSocket=(userData)=>{
         axios.defaults.headers.common["token"]=token
       }
       checkAuth()
-    }, [])
+    }, [login,updateProfile])
 
     
     const value={
