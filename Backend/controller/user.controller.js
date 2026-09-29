@@ -54,7 +54,7 @@ export const Signup = async (req,res) => {
       token,
       userData: {
         id: newUser._id,
-        fullName: newUser.name,
+        name: newUser.name,
         email: newUser.email,
         bio: newUser.bio,
         profilePic:newUser.profilePic

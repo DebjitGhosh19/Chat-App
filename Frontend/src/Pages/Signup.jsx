@@ -20,8 +20,17 @@ export default function Signup() {
       setStep(2);
       return;
     }
-    // Connect this form to the signup API here.
-        login("signup",form)
+    // Send the file as multipart form data so the API can receive it.
+    const formData = new FormData();
+    formData.append("name", form.name);
+    formData.append("email", form.email);
+    formData.append("password", form.password);
+    formData.append("bio", form.bio);
+    if (form.image) {
+      formData.append("image", form.image);
+    }
+
+    login("signup", formData);
   };
 
   return (

@@ -112,7 +112,7 @@ const connectSocket=(userData)=>{
         axios.defaults.headers.common["token"]=token
       }
       checkAuth()
-    }, [login,updateProfile])
+    }, [])
 
     
     const value={
