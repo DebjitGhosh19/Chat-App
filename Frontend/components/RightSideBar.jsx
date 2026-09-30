@@ -5,8 +5,11 @@ import assets, {
   userDummyData,
 } from "../src/assets/assets.js";
 import { useAuth } from "../context/AuthContex.jsx";
-const RightSideBar = ({ selectedUser, setselectedUser }) => {
-  const { authUser, updateProfile,logout } = useAuth();
+import { useChat } from "../context/ChatContext.jsx";
+const RightSideBar = () => {
+  const { authUser, updateProfile,logout ,} = useAuth();
+   const {selectedUser,setSelectedUser,getUsers,users, unseenMessages,
+        setUnseenMessages,}=useChat()
   return (
     selectedUser && (
       <div

@@ -1,10 +1,30 @@
-import React from "react";
-import assets, { userDummyData } from "../src/assets/assets.js";
+import React, { useEffect, useState } from "react";
+import assets from "../src/assets/assets.js";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContex.jsx";
-const LeftSideBar = ({ selectedUser, setselectedUser }) => {
-  const { authUser, updateProfile,logout } = useAuth();
+import { useChat } from "../context/ChatContext.jsx";
+const LeftSideBar = () => {
+  const { authUser, updateProfile, logout, onlineUsers } = useAuth();
+  const {
+    selectedUser,
+    setSelectedUser,
+    getUsers,
+    users,
+    unseenMessages,
+    setUnseenMessages,
+  } = useChat();
+  const [input, setInput] = useState();
+
+  useEffect(() => {
+    getUsers();
+  }, [onlineUsers]);
+
   const navigate = useNavigate();
+  const filterUsers = input
+    ? users.filter((user) =>
+        user.name.toLowerCase().includes(input.toLowerCase()),
+      )
+    : users;
   return (
     <div
       className={`bg-[#8182B2]/10 h-full p-5 rounded-r-xl overflow-y-scroll scrollbar-none text-white ${selectedUser ? "max-md:hidden" : " "} `}
@@ -21,7 +41,9 @@ const LeftSideBar = ({ selectedUser, setselectedUser }) => {
                 Edit Profile
               </p>
               <hr className=" border-t border-gray-500" />
-              <p onClick={()=>logout()} className=" text-sm">Logout</p>
+              <p onClick={() => logout()} className=" text-sm">
+                Logout
+              </p>
             </div>
           </div>
         </div>
@@ -33,20 +55,30 @@ const LeftSideBar = ({ selectedUser, setselectedUser }) => {
             name=""
             id=""
             placeholder="Search here..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
           />
         </div>
 
-        {userDummyData.map((user, index) => (
-          <div onClick={()=>setselectedUser(user)} className={`flex gap-4 items-center mt-5 cursor-pointer max-sm:text-sm  ${selectedUser._id==user._id&&"bg-[#282142]/50"} `} key={index}>
+        {filterUsers.map((user, index) => (
+          <div
+            onClick={() => setSelectedUser(user)}
+            className={`flex gap-4 items-center mt-5 cursor-pointer max-sm:text-sm  ${selectedUser._id == user._id && "bg-[#282142]/50"} `}
+            key={index}
+          >
             <img
               className="w-[35px] aspect-[1/1]  rounded-full "
-              src={user?.profilePic||assets.avatar_icon}
+              src={user?.profilePic || assets.avatar_icon}
               alt=""
             />
             <div className="flex  flex-1 gap-6 justify-between leading-5 relative">
               <div className="flex flex-col ">
                 <p>{user.fullName}</p>
-                <p className=" text-emerald-700 text-xl">online</p>
+                {onlineUsers.includes(user._id) ? (
+                  <p className=" text-emerald-700 text-xs">online</p>
+                ) : (
+                  <p className=" text-neutral-400 text-xs">offline</p>
+                )}
               </div>
               <p className="bg-violet-500/50 absolute top-4 right-4 text-xs h-5 w-5 flex justify-center items-center rounded-full">
                 4

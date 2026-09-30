@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useAuth } from './AuthContex';
 import toast from 'react-hot-toast';
 
@@ -45,30 +45,62 @@ const getMessages=async (userId) => {
         toast.error(error.messages)
     }
 }
+//function to send message to selected user
+const sendMessage=async (messageData) => {
+  try {
+    const {data}=await axios.post(`/api/message/send/${selectedUser._id}`,messageData)
+  
+  if (data.sucess) {
+    setMessages((prevMessages)=>[...prevMessages,data.newMessage])
+  }
+  else{
+    toast.error(data.messages)
+  }
+  } catch (error) {
+     toast.error(data.messages)
+  }
+}
 
-  const sendMessage = (text) => {
-    const trimmedText = text?.trim();
+//function to subscribe  to messages for selected user
 
-    if (!trimmedText) {
-      return;
-    }
+const subscribeToMessages=async () => {
+  if (!socket) return
+  socket.on("newMessage",(newMessage)=>{
+if (selectedUser && newMessage.senderId===selectedUser._id) {
+  newMessage.seen=true;
+  setMessages((prevMesssages)=>[...prevMesssages,newMessage]);
+  axios.put(`/api/messages/mark/${newMessage._id}`);
+}
+else{
+  setUnseenMessages((prevUnseenMessages)=>({
+    ...prevUnseenMessages,[newMessage.senderId]:prevUnseenMessages[newMessage.senderId]?prevUnseenMessages[newMessage.senderId]+1:1
+  }))
+}
+  })
+}
+  //function to unsubscribe  from messages
 
-    const newMessage = {
-      id: Date.now(),
-      text: trimmedText,
-      sender: 'me',
-      createdAt: new Date().toISOString(),
-    };
+const unsubscribeFromMessages=async () => {
+  if (socket) socket.off("newMessage");
+}
+  
+useEffect(() => {
+ subscribeToMessages();
+ return ()=> unsubscribeFromMessages
+}, [socket,selectedUser])
 
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
-  };
 
   const value = useMemo(
     () => ({
       messages,
+      users,
       setMessages,
       selectedUser,
+      getUsers,
+      setMessages,
       setSelectedUser,
+      unseenMessages,
+      setUnseenMessages,
       isTyping,
       setIsTyping,
       sendMessage,
