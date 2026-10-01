@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import assets, {
   imagesDummyData,
   messagesDummyData,
@@ -7,9 +7,25 @@ import assets, {
 import { useAuth } from "../context/AuthContex.jsx";
 import { useChat } from "../context/ChatContext.jsx";
 const RightSideBar = () => {
-  const { authUser, updateProfile,logout ,} = useAuth();
-   const {selectedUser,setSelectedUser,getUsers,users, unseenMessages,
-        setUnseenMessages,}=useChat()
+  const { authUser, updateProfile,logout ,onlineUsers,} = useAuth();
+  
+          const {
+            selectedUser,
+            setSelectedUser,
+            getUsers,
+            users,
+            unseenMessages,
+            setUnseenMessages,
+            messages
+          } = useChat();
+
+          const [msgImages, setMsgImages] = useState([])
+        //Get  all the images from the message and set them to state 
+        useEffect(() => {
+         setMsgImages(messages.filter(msg=>msg.image).map(msg=>msg.image))
+         
+        }, [messages])
+        
   return (
     selectedUser && (
       <div
@@ -22,8 +38,8 @@ const RightSideBar = () => {
             alt=""
           />
           <h1 className="px-10 text-xl font-medium mx-auto flex items-center gap-2">
-            <p className="w-2 h-2 rounded-full bg-green-400"></p>
-            {selectedUser.fullName}
+           {onlineUsers.includes(selectedUser._id) && <p className="w-2 h-2 rounded-full bg-green-400"></p>}
+            {selectedUser.name}
           </h1>
           <p className="px-10 mx-auto">{selectedUser.bio}</p>
         </div>
@@ -31,7 +47,7 @@ const RightSideBar = () => {
         <div className="px-5 text-xs">
           <p>Media</p>
           <div className="mt-2 max-h-[200px] overflow-auto scrollbar-none grid grid-cols-2 gap-4 opacity-80">
-            {imagesDummyData.map((url, index) => (
+            {msgImages.map((url, index) => (
               <div
                 key={index}
                 onClick={() => window.open(url)}

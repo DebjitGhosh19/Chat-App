@@ -17,6 +17,8 @@ const LeftSideBar = () => {
 
   useEffect(() => {
     getUsers();
+    console.log(getUsers());
+    
   }, [onlineUsers]);
 
   const navigate = useNavigate();
@@ -62,9 +64,9 @@ const LeftSideBar = () => {
 
         {filterUsers.map((user, index) => (
           <div
-            onClick={() => setSelectedUser(user)}
-            className={`flex gap-4 items-center mt-5 cursor-pointer max-sm:text-sm  ${selectedUser._id == user._id && "bg-[#282142]/50"} `}
-            key={index}
+            onClick={() =>{ setSelectedUser(user);setUnseenMessages(prev=>({...prev,[user._id]:0}))}}
+            className={`flex gap-4 items-center mt-5 cursor-pointer max-sm:text-sm  ${selectedUser?._id == user._id ? "bg-[#282142]/50": " "} `}
+            
           >
             <img
               className="w-[35px] aspect-[1/1]  rounded-full "
@@ -73,16 +75,16 @@ const LeftSideBar = () => {
             />
             <div className="flex  flex-1 gap-6 justify-between leading-5 relative">
               <div className="flex flex-col ">
-                <p>{user.fullName}</p>
+                <p>{user.name}</p>
                 {onlineUsers.includes(user._id) ? (
                   <p className=" text-emerald-700 text-xs">online</p>
                 ) : (
                   <p className=" text-neutral-400 text-xs">offline</p>
                 )}
               </div>
-              <p className="bg-violet-500/50 absolute top-4 right-4 text-xs h-5 w-5 flex justify-center items-center rounded-full">
-                4
-              </p>
+              {unseenMessages[user._id]>0&&<p className="bg-violet-500/50 absolute top-4 right-4 text-xs h-5 w-5 flex justify-center items-center rounded-full">
+              { unseenMessages[user._id]}
+              </p>}
             </div>
           </div>
         ))}

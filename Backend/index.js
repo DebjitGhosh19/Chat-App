@@ -22,22 +22,47 @@ export const io = new Server(server, {
 export const userSocketMap={}
 
 // socket.io connection handelar
-io.on('connection', (socket) => {
-  const userId=socket.handshake.query.userId;
-  console.log(`User connected: ` , userId);
-  if (userId) userSocketMap[userId]=socket.id
-  //Emit online users to all connected clients
-   io.emit("getOnlineUsers",
-            Object.keys(userSocketMap)
-        );
+// io.on('connection', (socket) => {
+//   const userId=socket.handshake.query.userId;
+//   console.log(`User connected: ` , userId);
+//   if (userId) userSocketMap[userId]=socket.id
+//   //Emit online users to all connected clients
+//    io.emit("getOnlineUsers",
+//             Object.keys(userSocketMap)
+//         );
 
-  // Handle user disconnection
-  socket.on('disconnect', () => {
-    console.log(`User disconnected: `, userId);
-    delete userSocketMap[userId]
-    io.emit("getOnlineUsers",
-            Object.keys(userSocketMap)
-        )
+//   // Handle user disconnection
+//   socket.on('disconnect', () => {
+//     console.log(`User disconnected: `, userId);
+//     delete userSocketMap[userId]
+//     io.emit("getOnlineUsers",
+//             Object.keys(userSocketMap)
+//         )
+//   });
+// });
+io.on("connection", (socket) => {
+  const userId = socket.handshake.query.userId;
+
+  console.log("🔌 Socket connected");
+  console.log("User ID:", userId);
+  console.log("Socket ID:", socket.id);
+
+  if (userId) {
+    userSocketMap[userId] = socket.id;
+  }
+
+  console.log("👥 User Socket Map:", userSocketMap);
+
+  io.emit("getOnlineUsers", Object.keys(userSocketMap));
+
+  socket.on("disconnect", () => {
+    console.log("❌ User disconnected:", userId);
+
+    delete userSocketMap[userId];
+
+    console.log("👥 User Socket Map:", userSocketMap);
+
+    io.emit("getOnlineUsers", Object.keys(userSocketMap));
   });
 });
 // middleware

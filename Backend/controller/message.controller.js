@@ -76,36 +76,124 @@ export const markMessageAsSeen = async (req, res) => {
 
  //send message to selected user
 
-export const sendMessage=async (req,res) => {
-    try {
-        const {text,image}=req.body;
-        const receiverId=req.params.id;
-        const senderId=req.user._id;
+// export const sendMessage=async (req,res) => {
+//     try {
+//         const {text,image}=req.body;
+//         const receiverId=req.params.id;
+//         const senderId=req.user._id;
 
-        let imageUrl;
-         if (image) {
-              const result = await cloudinary.uploader.upload(image.path, {
-                resource_type: "image",
-              });
-              imageUrl = result.secure_url;
-            }
+//         let imageUrl;
+//          if (image) {
+//               const result = await cloudinary.uploader.upload(image.path, {
+//                 resource_type: "image",
+//               });
+//               imageUrl = result.secure_url;
+//             }
 
-            const newMessage=await Message.create({
-                        senderId,
-                        receiverId,
-                        text,
-                        image:imageUrl,                    
-                    }
-            )
-//Emit the new message to the recevier's socket
-const receiverSocketId=userSocketMap[receiverId]
-if (receiverSocketId) {
-    io.to(receiverSocketId).emit("newMesage", newMessage)
-}
+//             const newMessage=await Message.create({
+//                         senderId,
+//                         receiverId,
+//                         text,
+//                         image:imageUrl,                    
+//                     }
+//             )
+// //Emit the new message to the recevier's socket
+// const receiverSocketId=userSocketMap[receiverId]
+// if (receiverSocketId) {
+//     io.to(receiverSocketId).emit("newMesage", newMessage)
+// }
 
-            res.json({success:true, newMessage})
-    } catch (error) {
-         console.log(error.message);
-        res.status(500).json({ success: false, message: error.message });
+//             res.json({success:true, newMessage})
+//     } catch (error) {
+//          console.log(error.message);
+//         res.status(500).json({ success: false, message: error.message });
+//     }
+// }
+// export const sendMessage = async (req, res) => {
+//   try {
+//     const { text, image } = req.body;
+
+//     const receiverId = req.params.id;
+//     const senderId = req.user._id;
+
+//     let imageUrl = "";
+
+//     if (image) {
+//       const result = await cloudinary.uploader.upload(image, {
+//         resource_type: "image",
+//       });
+
+//       imageUrl = result.secure_url;
+//     }
+
+//     const newMessage = await Message.create({
+//       senderId,
+//       receiverId,
+//       text,
+//       image: imageUrl,
+//     });
+
+//     return res.json({
+//       success: true,
+//       newMessage,
+//     });
+
+//   } catch (error) {
+//     console.log(error);
+//     return res.json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+export const sendMessage = async (req, res) => {
+  try {
+    const { text, image } = req.body;
+    const receiverId = req.params.id;
+    const senderId = req.user._id;
+
+    let imageUrl = "";
+
+    if (image) {
+      const result = await cloudinary.uploader.upload(image, {
+        resource_type: "image",
+      });
+
+      imageUrl = result.secure_url;
     }
-}
+
+    const newMessage = await Message.create({
+      senderId,
+      receiverId,
+      text,
+      image: imageUrl,
+    });
+
+    // 🔥 Find receiver's socket
+    const receiverSocketId = userSocketMap[receiverId.toString()];
+
+    console.log("Receiver ID:", receiverId.toString());
+    console.log("Receiver Socket ID:", receiverSocketId);
+
+    // 🔥 Send realtime message to receiver
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+      console.log("✅ newMessage emitted to receiver");
+    } else {
+      console.log("❌ Receiver is not online");
+    }
+
+    return res.json({
+      success: true,
+      newMessage,
+    });
+
+  } catch (error) {
+    console.log(error);
+
+    return res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

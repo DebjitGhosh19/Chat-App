@@ -52,13 +52,20 @@ export const Signup = async (req,res) => {
       success: true,
       message: "User registered successfully.",
       token,
+      // userData: {
+      //   id: newUser._id,
+      //   name: newUser.name,
+      //   email: newUser.email,
+      //   bio: newUser.bio,
+      //   profilePic:newUser.profilePic
+      // },
       userData: {
-        id: newUser._id,
-        name: newUser.name,
-        email: newUser.email,
-        bio: newUser.bio,
-        profilePic:newUser.profilePic
-      },
+  _id: newUser._id,
+  name: newUser.name,
+  email: newUser.email,
+  bio: newUser.bio,
+  profilePic: newUser.profilePic
+}
     });
   } catch (error) {
     console.error("Signup error:", error);
