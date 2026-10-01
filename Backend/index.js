@@ -8,6 +8,8 @@ import userRouter from './routes/user.router.js';
 import cloudinaryConfig from './config/cloudinary.js';
 import messageRouter from './routes/message.router.js';
 const port = process.env.PORT||3000;
+// import dns from 'dns'
+// dns.setServers(['1.1.1.1',"8.8.8.8"])
 //Create Express app and HTTP server
 const app = express();
 const server = http.createServer(app);

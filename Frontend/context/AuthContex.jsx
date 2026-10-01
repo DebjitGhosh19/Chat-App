@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import {io} from "socket.io-client"
 const AuthContext = createContext(null);
-const Backend_URL =  "http://localhost:4000";
+const Backend_URL =  import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
 axios.defaults.baseURL = Backend_URL;
 
 export function AuthProvider({ children }) {

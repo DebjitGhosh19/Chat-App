@@ -3,7 +3,7 @@ import { useAuth } from "./AuthContex";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { data } from "react-router-dom";
-const Backend_URL = "http://localhost:4000";
+const Backend_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
 axios.defaults.baseURL = Backend_URL;
 const ChatContext = createContext(null);
 

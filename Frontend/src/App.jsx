@@ -12,7 +12,7 @@ import {useAuth} from "../context/AuthContex.jsx";
 const App = () => {
    const { authUser } = useAuth();
   return (
-    <div className='bg-[url("./src/assets/bgImage.svg")] bg-center'>
+    <div className='bg-[url("/bgImage.svg")] bg-center'>
         <Toaster />
       <Routes>
       
